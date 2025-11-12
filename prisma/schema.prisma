@@ -31,14 +31,14 @@ model Store{
   id        String      @id @default(cuid())
   name      String
   address   String
-  ownerId   String 
+  email     String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   //relation
-  owner     User     @relation("userStore",fields: [ownerId], references: [id])   
+  owner     User     @relation("userStore",fields: [email], references: [email])   
   ratings    Rating[] @relation("storeRating")
-  @@unique([ownerId])
+  @@unique([email])
   
 }
 model Rating{

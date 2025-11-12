@@ -1,9 +1,15 @@
-import { Request, Response, Router } from "express";
-import { LoginUser, RegisterUser } from "../controllers/userController";
+import { Router } from "express";
+import { LoginUser, logout, RegisterUser } from "../controllers/userController";
 import { validateDTO } from "../middleware/dto.validator";
-import { RegisterUserDto } from "../dto/user.dto";
+import { LoginUserDto, RegisterUserDto } from "../dto/user.dto";
+import { verifyToken } from "../utils/handleJWT";
 
-const route = Router();
-route.get("/login", LoginUser);
-route.post("/register", validateDTO(RegisterUserDto), RegisterUser);
-export default route;
+const router = Router();
+router.post("/login", validateDTO(LoginUserDto), LoginUser);
+router.post("/register", validateDTO(RegisterUserDto), RegisterUser);
+router.get("/logout", logout);
+
+router.get("/me", verifyToken, (req, res) => {
+  res.json(req.user);
+});
+export default router;
