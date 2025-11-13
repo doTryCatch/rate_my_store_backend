@@ -8,7 +8,7 @@ class StoreServices {
     const isEmailUser = await prisma.store.findUnique({
       where: { email: data.email },
     });
-    if (isEmailUser) return { msg: "Email Already taken !" };
+    if (isEmailUser) return { success: false, msg: "Email Already taken !" };
     const isUserExists = await prisma.user.findUnique({
       where: {
         email: data.email,
@@ -31,7 +31,7 @@ class StoreServices {
       ]);
 
       // returning only store
-      return result[1];
+      return { success: true, data: result[1] };
     }
     const res = await prisma.store.create({
       data: {
@@ -40,8 +40,8 @@ class StoreServices {
         address: data.address,
       },
     });
-    console.log("res", res);
-    return res;
+
+    return { success: true, data: res };
   }
   async getUserStore(email: string) {
     const res = await prisma.store.findMany({
