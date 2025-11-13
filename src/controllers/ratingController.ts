@@ -11,6 +11,6 @@ export const AddRating = async (req: Request, res: Response) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Login failed: Internal Server Error", error });
+      .json({ message: "Rating failed: Internal Server Error", error });
   }
 };

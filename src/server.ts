@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 const options = {
-  origin: "https://rate-my-store-alpha.vercel.app",
+  origin: ["https://rate-my-store-alpha.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Cookie"],
   credentials: true,
