@@ -49,7 +49,22 @@ class StoreServices {
       },
     });
 
-    return res;
+    return res.map((store: any) => {
+      const ratings = store.ratings ?? [];
+
+      const avg =
+        ratings.length > 0
+          ? ratings.reduce(
+              (sum: number, data: any) => sum + Number(data.value),
+              0
+            ) / ratings.length
+          : 0;
+
+      return {
+        ...store,
+        averageRating: avg,
+      };
+    });
   }
   async getAllStore() {
     const res = await prisma.store.findMany({
@@ -63,8 +78,22 @@ class StoreServices {
         },
       },
     });
+    return res.map((store: any) => {
+      const ratings = store.ratings ?? [];
 
-    return res;
+      const avg =
+        ratings.length > 0
+          ? ratings.reduce(
+              (sum: number, data: any) => sum + Number(data.value),
+              0
+            ) / ratings.length
+          : 0;
+
+      return {
+        ...store,
+        averageRating: avg,
+      };
+    });
   }
 }
 export const storeServices = new StoreServices();
