@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -16,43 +10,48 @@ datasource db {
 
 model User {
   id        String      @id @default(cuid())
-  email     String   @unique
-  password  String
+  email     String      @unique
   address   String
   name      String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  //realtion 
-  store     Store? @relation("userStore")
-  ratings    Rating[] @relation("userRating")
+  password  String 
+  role      Role        @default(USER)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  store     Store?      @relation("userStore")   // opposite relation
+  ratings   Rating[]    @relation("userRating")
 }
-model Store{
+
+model Store {
   id        String      @id @default(cuid())
   name      String
   address   String
-  email     String 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  //relation
-  owner     User     @relation("userStore",fields: [email], references: [email])   
-  ratings    Rating[] @relation("storeRating")
-  @@unique([email])
-  
+  email     String       @unique
+  userId    String?      // FK to User.id
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  owner     User?        @relation("userStore", fields: [userId], references: [id])  
+  ratings   Rating[]     @relation("storeRating")
+
+  @@unique([userId])      
 }
-model Rating{
+
+model Rating {
   id        String      @id @default(cuid())
   value     Int
   userId    String
   storeId   String
-  user      User     @relation("userRating",fields: [userId], references: [id])
-  store     Store    @relation("storeRating",fields: [storeId], references: [id])
+
+  user      User     @relation("userRating", fields: [userId], references: [id])
+  store     Store    @relation("storeRating", fields: [storeId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@unique([userId, storeId])
- 
 }
+
 enum Role {
   ADMIN
   USER

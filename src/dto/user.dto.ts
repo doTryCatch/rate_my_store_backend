@@ -5,6 +5,7 @@ import {
   IsString,
   MaxLength,
   MinLength,
+  IsNotEmpty,
 } from "class-validator";
 
 export enum Role {
@@ -15,20 +16,23 @@ export enum Role {
 
 export class RegisterUserDto {
   @IsEmail({}, { message: "Invalid email format" })
+  @IsNotEmpty({ message: "Email must not be empty" })
   email!: string;
 
   @IsString()
-  @MinLength(8, { message: "Password must be at least 8 characters long" })
   @MaxLength(16, { message: "Password must not exceed 16 characters" })
+  @MinLength(8, { message: "Password must be at least 8 characters long" })
   password!: string;
 
   @IsString()
-  @MinLength(20, { message: "Name must be at least 20 characters long" })
   @MaxLength(60, { message: "Name must not exceed 60 characters" })
+  @MinLength(20, { message: "Name must be at least 20 characters long" })
+  @IsNotEmpty({ message: "Name must not be empty" })
   name!: string;
 
   @IsString()
   @MaxLength(400, { message: "Address must not exceed 400 characters" })
+  @IsNotEmpty({ message: "Address must not be empty" })
   address!: string;
 
   @IsOptional()
@@ -38,6 +42,7 @@ export class RegisterUserDto {
 
 export class LoginUserDto {
   @IsEmail()
+  @IsNotEmpty({ message: "Email must not be empty" })
   email!: string;
 
   @IsString()
@@ -47,10 +52,14 @@ export class LoginUserDto {
 }
 
 export class UpdateUserDto {
+  @IsEmail({}, { message: "Invalid email format" })
+  @IsNotEmpty({ message: "Email must not be empty" })
+  email?: string;
   @IsOptional()
   @IsString()
-  @MinLength(20)
-  @MaxLength(60)
+  @MaxLength(60, { message: "Name must not exceed 60 characters" })
+  @MinLength(20, { message: "Name must be at least 20 characters long" })
+  @IsNotEmpty({ message: "Name must not be empty" })
   name?: string;
 
   @IsOptional()
@@ -60,14 +69,19 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(8)
-  @MaxLength(16)
+  @MaxLength(16, { message: "Password must not exceed 16 characters" })
+  @MinLength(8, { message: "Password must be at least 8 characters long" })
   password?: string;
+
+  @IsOptional()
+  @IsEnum(Role, { message: "Role must be ADMIN, USER, or STORE_OWNER" })
+  role?: Role;
 }
 
 export interface userInfo {
   id: string;
   name: string;
   email: string;
+  address: string;
   role: "ADMIN" | "USER" | "STORE_OWNER";
 }

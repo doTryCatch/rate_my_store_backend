@@ -9,10 +9,10 @@ export const validateDTO = (anyDTO: any) => {
     const isValid = await validate(dtoObject);
 
     const validationMsg = isValid.map((err) => err.constraints)[0];
-    console.log(req.body, dtoObject);
+    console.log(validationMsg);
 
     if (validationMsg) {
-      const firstMsg = Object.values(validationMsg);
+      const firstMsg = Object.values(validationMsg)[0];
       return res.status(401).json({
         msg: `Validation failed: ${firstMsg}`,
         errors: validationMsg,

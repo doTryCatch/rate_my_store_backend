@@ -1,15 +1,69 @@
 import prisma from "../config/prisma";
 import { StoreCreateDTO } from "../dto/store.dto";
+import authUserServices from "./authUserServices";
 
 class StoreServices {
   async create(data: StoreCreateDTO) {
-    const res = prisma.store.create({
+    //if user already exist with same email then update the role to STORE_OWNER
+    const isUserExists = await prisma.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+    console.log("is user", isUserExists);
+    if (isUserExists) {
+      const result = await prisma.$transaction([
+        prisma.user.update({
+          where: { email: data.email },
+          data: { role: "STORE_OWNER" },
+        }),
+        prisma.store.create({
+          data: {
+            name: data.name,
+            email: data.email,
+            address: data.address,
+          },
+        }),
+      ]);
+
+      // returning only store
+      return result[1];
+    }
+    const res = await prisma.store.create({
       data: {
         name: data.name,
         email: data.email,
         address: data.address,
       },
     });
+    console.log("res", res);
+    return res;
+  }
+  async getUserStore(email: string) {
+    const res = await prisma.store.findMany({
+      where: {
+        email,
+      },
+      include: {
+        ratings: true,
+      },
+    });
+
+    return res;
+  }
+  async getAllStore() {
+    const res = await prisma.store.findMany({
+      include: {
+        ratings: {
+          select: {
+            value: true,
+            userId: true,
+            storeId: true,
+          },
+        },
+      },
+    });
+
     return res;
   }
 }
