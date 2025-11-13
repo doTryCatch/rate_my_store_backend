@@ -14,7 +14,7 @@ const router = Router();
 router.post("/login", validateDTO(LoginUserDto), LoginUser);
 router.post("/register", validateDTO(RegisterUserDto), RegisterUser);
 router.get("/getAllUsers", verifyToken, GetAllUsers);
-router.get("/logout", logout);
+router.get("/logout", verifyToken, logout);
 router.post("/updateUser", validateDTO(UpdateUserDto), UpdateUser);
 
 router.get("/me", verifyToken, (req, res) => {

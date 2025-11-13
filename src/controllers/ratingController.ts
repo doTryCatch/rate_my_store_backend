@@ -7,7 +7,9 @@ export const AddRating = async (req: Request, res: Response) => {
     console.log(response);
     if (!response) return res.status(401).json(response);
 
-    return res.status(200).json(response);
+    return res
+      .status(200)
+      .json({ msg: "Rating Added successfully", data: response });
   } catch (error) {
     res
       .status(500)

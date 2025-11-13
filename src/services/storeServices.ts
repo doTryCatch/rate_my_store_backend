@@ -5,6 +5,10 @@ import authUserServices from "./authUserServices";
 class StoreServices {
   async create(data: StoreCreateDTO) {
     //if user already exist with same email then update the role to STORE_OWNER
+    const isEmailUser = await prisma.store.findUnique({
+      where: { email: data.email },
+    });
+    if (isEmailUser) return { msg: "Email Already taken !" };
     const isUserExists = await prisma.user.findUnique({
       where: {
         email: data.email,

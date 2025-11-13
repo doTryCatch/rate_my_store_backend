@@ -8,7 +8,9 @@ export const CreateStore = async (req: Request, res: Response) => {
 
     if (!response) return res.status(401).json(response);
 
-    return res.status(200).json(response);
+    return res
+      .status(200)
+      .json({ msg: "store created successfully", data: response });
   } catch (error) {
     res
       .status(500)
